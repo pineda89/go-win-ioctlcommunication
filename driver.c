@@ -11,6 +11,18 @@ PKERNEL_REQUEST request;
 uint64_t* OutPut;
 SIZE_T File = 0;
 
+typedef struct readStruct
+{
+	ULONGLONG UserBufferAdress;
+	ULONGLONG GameAddressOffset;
+	ULONGLONG ReadSize;
+	ULONG     UserPID;
+	ULONG     GamePID;
+	BOOLEAN   WriteOrRead;
+	UINT32	  ProtocolMsg;
+} ReadStruct, *pReadStruct;
+
+
 NTSTATUS KeReadVirtualMemory(PEPROCESS Process_, PVOID SourceAddress, PVOID TargetAddress, SIZE_T Size)
 {
 	File = 0;
@@ -117,8 +129,6 @@ NTSTATUS DriverInitialize( _In_  struct _DRIVER_OBJECT *DriverObject, _In_  PUNI
 	DriverObject->MajorFunction[IRP_MJ_CREATE] = &CreateDispatch;
 	DriverObject->MajorFunction[IRP_MJ_CLOSE] = &CloseDispatch;
 	DriverObject->DriverUnload = NULL;
-
-	ClearUnloadedDrivers();
 
 	devobj->Flags &= ~DO_DEVICE_INITIALIZING;
 
